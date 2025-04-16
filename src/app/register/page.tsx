@@ -6,8 +6,9 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {useState} from 'react';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
-import {auth} from '@/lib/firebase';
+import {auth} from '@/lib/firebase'; // Import the auth object
 import {useRouter} from 'next/navigation';
+import {useEffect} from 'react';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -15,9 +16,27 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const [isFirebaseInitialized, setIsFirebaseInitialized] = useState(false);
+
+  useEffect(() => {
+    // Check if Firebase is initialized
+    if (auth) {
+      setIsFirebaseInitialized(true);
+    } else {
+      console.error('Firebase initialization failed.');
+      setError('Firebase initialization failed. Please check your configuration.');
+    }
+  }, []);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isFirebaseInitialized) {
+      setError('Firebase not initialized. Please try again.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError("Passwords don't match");
       return;
@@ -78,13 +97,15 @@ export default function Register() {
                 required
               />
             </div>
-            <Button type="submit" className="rounded-md">
+            <Button type="submit" className="rounded-md" disabled={!isFirebaseInitialized}>
               Register
             </Button>
+            {!isFirebaseInitialized && (
+              <p className="text-red-500">Firebase is not initialized. Please wait...</p>
+            )}
           </form>
         </CardContent>
       </Card>
     </div>
   );
 }
-
