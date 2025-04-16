@@ -32,11 +32,14 @@ export default function Home() {
                 Register
               </Button>
             </Link>
+            <Link href="/login">
+              <Button variant="secondary" className="rounded-md text-black">
+                Login
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
     </div>
   );
 }
-
-
