@@ -27,9 +27,11 @@ export default function Home() {
             profile management.
           </p>
           <div className="flex justify-center space-x-4">
-            <Button className="rounded-md" onClick={() => alert('Configure Authentication First')}>
-              {mounted ? 'Get Started' : 'Loading...'}
-            </Button>
+            <Link href="/register">
+              <Button className="rounded-md">
+                {mounted ? 'Get Started' : 'Loading...'}
+              </Button>
+            </Link>
             <Link href="/register">
               <Button variant="secondary" className="rounded-md">
                 Register
@@ -41,3 +43,4 @@ export default function Home() {
     </div>
   );
 }
+
