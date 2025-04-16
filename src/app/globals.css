@@ -16,13 +16,13 @@ body {
     --popover: 0 0% 100%;
     --popover-foreground: 240 5.3% 26.1%;
     --primary: 174 37% 74%; /* Light teal (#A0CED9) */
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 220 5.3% 26.1%; /* Dark color for better contrast */
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 240 5.3% 26.1%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
     --accent: 33 100% 66%; /* Soft orange (#FFB347) */
-    --accent-foreground: 0 0% 0%;
+    --accent-foreground: 240 5.3% 26.1%; /* Dark color for better contrast */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
@@ -51,13 +51,13 @@ body {
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 174 37% 74%; /* Light teal (#A0CED9) */
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 0 0% 98%; /* Light color for better contrast in dark mode */
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
     --accent: 33 100% 66%; /* Soft orange (#FFB347) */
-    --accent-foreground: 0 0% 0%;
+    --accent-foreground: 0 0% 98%; /* Light color for better contrast in dark mode */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 14.9%;
@@ -87,3 +87,5 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+    
