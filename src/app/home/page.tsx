@@ -15,24 +15,21 @@ export default function Home() {
   const [isEditing, setIsEditing] = useState(false);
   const [tempAboutMe, setTempAboutMe] = useState(aboutMe);
   const router = useRouter();
-  const [userId, setUserId] = useState<string | null>(null); // State to store user ID
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         setUserEmail(user.email);
-        setUserId(user.uid); // Set user ID
+        setUserId(user.uid);
 
-        // Fetch user data from Firestore
         const userDocRef = doc(db, 'users', user.uid);
         const docSnap = await getDoc(userDocRef);
 
         if (docSnap.exists()) {
-          // Set aboutMe from Firestore if it exists
           setAboutMe(docSnap.data().aboutMe || 'No about me yet.');
           setTempAboutMe(docSnap.data().aboutMe || 'No about me yet.');
         } else {
-          // Create user document in Firestore if it doesn't exist
           await setDoc(userDocRef, {
             email: user.email,
             aboutMe: 'No about me yet.',
@@ -41,18 +38,17 @@ export default function Home() {
           setTempAboutMe('No about me yet.');
         }
       } else {
-        // Redirect to login if the user is not authenticated
         router.push('/login');
       }
     });
 
-    return () => unsubscribe(); // Cleanup the subscription
+    return () => unsubscribe();
   }, [router]);
 
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      router.push('/login'); // Redirect to login page after signing out
+      router.push('/login');
     } catch (error: any) {
       console.error('Sign out failed:', error.message);
     }
@@ -60,27 +56,27 @@ export default function Home() {
 
   const handleEdit = () => {
     setIsEditing(true);
-    setTempAboutMe(aboutMe); // Initialize tempAboutMe with the current aboutMe
+    setTempAboutMe(aboutMe);
   };
 
   const handleSave = async () => {
     if (!userId) return;
 
-    // Update Firestore with the new aboutMe
     const userDocRef = doc(db, 'users', userId);
     await setDoc(userDocRef, { aboutMe: tempAboutMe, email:userEmail }, { merge: true });
 
-    setAboutMe(tempAboutMe); // Save the temporary aboutMe to the actual aboutMe
+    setAboutMe(tempAboutMe);
     setIsEditing(false);
+    setTempAboutMe(tempAboutMe); // or setTempAboutMe(''); to clear the textarea
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setTempAboutMe(aboutMe); // Reset tempAboutMe to the current aboutMe
+    setTempAboutMe(aboutMe);
   };
 
   if (!userEmail) {
-    return <div>Loading...</div>; // Or a loading spinner
+    return <div>Loading...</div>;
   }
 
   return (
