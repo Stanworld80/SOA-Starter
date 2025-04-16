@@ -47,7 +47,7 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log('Logged in with:', email);
-      router.push('/');
+      router.push('/home'); // Redirect to the user's homepage after login
     } catch (err: any) {
       setError(err.message);
       console.error('Login failed:', err.message);

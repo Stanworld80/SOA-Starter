@@ -28,12 +28,12 @@ export default function Home() {
           </p>
           <div className="flex justify-center space-x-4">
             <Link href="/register">
-              <Button variant="secondary" className="rounded-md text-black">
+              <Button  className="rounded-md ">
                 Register
               </Button>
             </Link>
             <Link href="/login">
-              <Button variant="secondary" className="rounded-md text-black">
+              <Button  className="rounded-md ">
                 Login
               </Button>
             </Link>
