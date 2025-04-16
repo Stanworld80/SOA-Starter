@@ -4,11 +4,10 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
 import {auth} from '@/lib/firebase'; // Import the auth object
 import {useRouter} from 'next/navigation';
-import {useEffect} from 'react';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -19,13 +18,24 @@ export default function Register() {
   const [isFirebaseInitialized, setIsFirebaseInitialized] = useState(false);
 
   useEffect(() => {
-    // Check if Firebase is initialized
-    if (auth) {
-      setIsFirebaseInitialized(true);
-    } else {
-      console.error('Firebase initialization failed.');
-      setError('Firebase initialization failed. Please check your configuration.');
-    }
+    const checkFirebaseInitialization = async () => {
+      try {
+        // Check if auth object is available, which indicates successful initialization
+        if (auth) {
+          setIsFirebaseInitialized(true);
+        } else {
+          console.error('Firebase initialization failed.');
+          setError('Firebase initialization failed. Please check your configuration.');
+          setIsFirebaseInitialized(false);
+        }
+      } catch (e) {
+        console.error('Error during Firebase initialization check:', e);
+        setError('Error checking Firebase initialization. Please try again.');
+        setIsFirebaseInitialized(false);
+      }
+    };
+
+    checkFirebaseInitialization();
   }, []);
 
 
