@@ -3,6 +3,7 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {useEffect, useState} from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -25,14 +26,18 @@ export default function Home() {
             This is a starter application that provides a basic setup for Firebase authentication and
             profile management.
           </p>
-          <div className="flex justify-center">
+          <div className="flex justify-center space-x-4">
             <Button className="rounded-md" onClick={() => alert('Configure Authentication First')}>
               {mounted ? 'Get Started' : 'Loading...'}
             </Button>
+            <Link href="/register">
+              <Button variant="secondary" className="rounded-md">
+                Register
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
     </div>
   );
 }
-
