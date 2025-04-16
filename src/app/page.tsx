@@ -18,7 +18,7 @@ export default function Home() {
         <CardHeader>
           <CardTitle className="text-2xl text-center">Welcome to SOA-Starter!</CardTitle>
           <CardDescription className="text-center text-muted-foreground">
-            Your Firebase, Next.js, and Shadcn UI starter.
+            A simple signable app starter.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col space-y-4">
