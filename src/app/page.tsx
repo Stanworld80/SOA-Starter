@@ -28,11 +28,6 @@ export default function Home() {
           </p>
           <div className="flex justify-center space-x-4">
             <Link href="/register">
-              <Button className="rounded-md text-black">
-                {mounted ? 'Get Started' : 'Loading...'}
-              </Button>
-            </Link>
-            <Link href="/register">
               <Button variant="secondary" className="rounded-md text-black">
                 Register
               </Button>
