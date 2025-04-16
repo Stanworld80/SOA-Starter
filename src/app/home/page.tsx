@@ -6,10 +6,13 @@ import {useEffect, useState} from 'react';
 import {auth} from '@/lib/firebase';
 import {useRouter} from 'next/navigation';
 import {signOut} from 'firebase/auth';
+import {Textarea} from '@/components/ui/textarea';
 
 export default function Home() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [aboutMe, setAboutMe] = useState<string>('This is a default about me section.'); // Example default text
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempAboutMe, setTempAboutMe] = useState(aboutMe);
   const router = useRouter();
 
   useEffect(() => {
@@ -35,6 +38,21 @@ export default function Home() {
     }
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+    setTempAboutMe(aboutMe); // Initialize tempAboutMe with the current aboutMe
+  };
+
+  const handleSave = () => {
+    setAboutMe(tempAboutMe); // Save the temporary aboutMe to the actual aboutMe
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setTempAboutMe(aboutMe); // Reset tempAboutMe to the current aboutMe
+  };
+
   if (!userEmail) {
     return <div>Loading...</div>; // Or a loading spinner
   }
@@ -52,9 +70,33 @@ export default function Home() {
           <p>
             <strong>Email:</strong> {userEmail}
           </p>
-          <p>
-            <strong>About Me:</strong> {aboutMe}
-          </p>
+          <div>
+            <strong>About Me:</strong>
+            {isEditing ? (
+              <Textarea
+                value={tempAboutMe}
+                onChange={(e) => setTempAboutMe(e.target.value)}
+                className="mb-2"
+              />
+            ) : (
+              <p>{aboutMe}</p>
+            )}
+          </div>
+
+          {isEditing ? (
+            <div className="flex justify-between">
+              <Button onClick={handleSave} className="rounded-md">
+                Save
+              </Button>
+              <Button type="button" variant="outline" className="rounded-md" onClick={handleCancel}>
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <Button onClick={handleEdit} className="rounded-md">
+              Edit About Me
+            </Button>
+          )}
           <Button onClick={handleSignOut} className="rounded-md">
             Sign Out
           </Button>
