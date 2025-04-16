@@ -1,23 +1,16 @@
-import {initializeApp} from 'firebase/app';
-import {getAuth} from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
-// Use environment variables for Firebase configuration
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDnYCwOzwljjoC5UmsaeFF55Iawzvkdbf0",
+  authDomain: "soa-starter-9b8ij.firebaseapp.com",
+  projectId: "soa-starter-9b8ij",
+  storageBucket: "soa-starter-9b8ij.firebasestorage.app",
+  messagingSenderId: "1007074958915",
+  appId: "1:1007074958915:web:3221692d194a844286fef6"
 };
 
-let app;
-
-try {
-  app = initializeApp(firebaseConfig);
-} catch (error: any) {
-  console.error("Firebase initialization error:", error.message);
-  throw new Error("Failed to initialize Firebase. Check your configuration.");
-}
-
+const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);

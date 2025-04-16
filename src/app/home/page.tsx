@@ -3,22 +3,43 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {useEffect, useState} from 'react';
-import {auth} from '@/lib/firebase';
+import {auth, db} from '@/lib/firebase';
 import {useRouter} from 'next/navigation';
 import {signOut} from 'firebase/auth';
 import {Textarea} from '@/components/ui/textarea';
+import {doc, getDoc, setDoc} from 'firebase/firestore';
 
 export default function Home() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [aboutMe, setAboutMe] = useState<string>('This is a default about me section.'); // Example default text
+  const [aboutMe, setAboutMe] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
   const [tempAboutMe, setTempAboutMe] = useState(aboutMe);
   const router = useRouter();
+  const [userId, setUserId] = useState<string | null>(null); // State to store user ID
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         setUserEmail(user.email);
+        setUserId(user.uid); // Set user ID
+
+        // Fetch user data from Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(userDocRef);
+
+        if (docSnap.exists()) {
+          // Set aboutMe from Firestore if it exists
+          setAboutMe(docSnap.data().aboutMe || 'No about me yet.');
+          setTempAboutMe(docSnap.data().aboutMe || 'No about me yet.');
+        } else {
+          // Create user document in Firestore if it doesn't exist
+          await setDoc(userDocRef, {
+            email: user.email,
+            aboutMe: 'No about me yet.',
+          });
+          setAboutMe('No about me yet.');
+          setTempAboutMe('No about me yet.');
+        }
       } else {
         // Redirect to login if the user is not authenticated
         router.push('/login');
@@ -34,7 +55,6 @@ export default function Home() {
       router.push('/login'); // Redirect to login page after signing out
     } catch (error: any) {
       console.error('Sign out failed:', error.message);
-      // Optionally display an error message to the user
     }
   };
 
@@ -43,7 +63,13 @@ export default function Home() {
     setTempAboutMe(aboutMe); // Initialize tempAboutMe with the current aboutMe
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!userId) return;
+
+    // Update Firestore with the new aboutMe
+    const userDocRef = doc(db, 'users', userId);
+    await setDoc(userDocRef, { aboutMe: tempAboutMe }, { merge: true });
+
     setAboutMe(tempAboutMe); // Save the temporary aboutMe to the actual aboutMe
     setIsEditing(false);
   };
