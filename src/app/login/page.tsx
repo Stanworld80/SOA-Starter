@@ -8,6 +8,7 @@ import {useState, useEffect} from 'react';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 import {auth} from '@/lib/firebase';
 import {useRouter} from 'next/navigation';
+import Link from 'next/link';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -93,8 +94,15 @@ export default function Login() {
               <p className="text-red-500">Firebase is not initialized. Please wait...</p>
             )}
           </form>
+          <p className="text-center">
+            Don't have an account?{' '}
+            <Link href="/register" className="text-primary hover:underline">
+              Register
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </div>
   );
 }
+
