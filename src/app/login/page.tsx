@@ -55,6 +55,10 @@ export default function Login() {
     }
   };
 
+  const handleCancel = () => {
+    router.push('/'); // Navigate back to the root page
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-background">
       <Card className="w-full max-w-md shadow-md rounded-lg">
@@ -87,9 +91,14 @@ export default function Login() {
                 required
               />
             </div>
-            <Button type="submit" className="rounded-md" disabled={!isFirebaseInitialized}>
-              Login
-            </Button>
+            <div className="flex justify-between">
+              <Button type="submit" className="rounded-md" disabled={!isFirebaseInitialized}>
+                Login
+              </Button>
+              <Button type="button" variant="outline" className="rounded-md" onClick={handleCancel}>
+                Cancel
+              </Button>
+            </div>
             {!isFirebaseInitialized && (
               <p className="text-red-500">Firebase is not initialized. Please wait...</p>
             )}
@@ -105,4 +114,3 @@ export default function Login() {
     </div>
   );
 }
-
