@@ -68,7 +68,7 @@ export default function Home() {
 
     // Update Firestore with the new aboutMe
     const userDocRef = doc(db, 'users', userId);
-    await setDoc(userDocRef, { aboutMe: tempAboutMe }, { merge: true });
+    await setDoc(userDocRef, { aboutMe: tempAboutMe, email:userEmail }, { merge: true });
 
     setAboutMe(tempAboutMe); // Save the temporary aboutMe to the actual aboutMe
     setIsEditing(false);
