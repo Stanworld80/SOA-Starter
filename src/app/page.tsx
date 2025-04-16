@@ -27,14 +27,14 @@ export default function Home() {
             profile management.
           </p>
           <div className="flex justify-center space-x-4">
-            <Link href="/register">
-              <Button  className="rounded-md ">
-                Register
-              </Button>
-            </Link>
             <Link href="/login">
               <Button  className="rounded-md ">
                 Login
+              </Button>
+            </Link>
+            <Link href="/register">
+              <Button  className="rounded-md ">
+                Register
               </Button>
             </Link>
           </div>
@@ -43,3 +43,4 @@ export default function Home() {
     </div>
   );
 }
+
