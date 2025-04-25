@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:soa_starter/services/auth_service.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -10,44 +10,39 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  String? _errorMessage;
 
-  String? _errorMessage; // Pour afficher les erreurs
+  // Instance de notre AuthService (avec GoogleSignIn)
+  final AuthService _authService = AuthService();
 
-  Future<void> _signIn() async {
-    if (_formKey.currentState!.validate()) {
+  // Méthode pour se connecter avec l'email et le mot de passe
+  Future<void> _signInWithEmail() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      // Naviguer vers la page d'accueil après la connexion
+      Navigator.pushReplacementNamed(context, '/logged_homepage');
+    } on FirebaseAuthException catch (e) {
       setState(() {
-        _errorMessage = null; // Réinitialise l'erreur
+        _errorMessage = e.message; // Gérer l'erreur
       });
-      try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
-        // Si la connexion réussit, la EntryPage (ou StreamBuilder) redirigera
-        // vers LoggedHomepage automatiquement via authStateChanges
-        Navigator.of(context).pop(); // Ferme la page Sign In
-      } on FirebaseAuthException catch (e) {
-        // Gérer les erreurs de connexion
-        setState(() {
-          if (e.code == 'user-not-found') {
-            _errorMessage = 'No user found for that email.';
-          } else if (e.code == 'wrong-password') {
-            _errorMessage = 'Wrong password provided for that user.';
-          } else {
-            _errorMessage = 'Sign in failed: ${e.message}';
-          }
-        });
-        print("Sign In Error: ${e.code}"); // Debug
-      } catch (e) {
-        // Autres erreurs possibles
-        setState(() {
-          _errorMessage = 'An unexpected error occurred.';
-        });
-        print("Unexpected Sign In Error: $e"); // Debug
-      }
+    }
+  }
+
+  // Méthode pour se connecter avec Google
+  Future<void> _signInWithGoogle() async {
+    try {
+      await _authService.signInWithGoogle();
+      // Si l'authentification réussit, on redirige l'utilisateur
+      Navigator.pushReplacementNamed(context, '/logged_homepage');
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Google Sign-In failed. Please try again.';
+      });
     }
   }
 
@@ -58,73 +53,56 @@ class _SignInPageState extends State<SignInPage> {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    // Vous pouvez ajouter une validation d'email plus poussée
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                if (_errorMessage != null) // Afficher l'erreur si elle existe
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 15.0),
-                    child: Text(
-                      _errorMessage!,
-                      style: const TextStyle(color: Colors.red),
-                      textAlign: TextAlign.center,
-                    ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 15.0),
+                  child: Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
                   ),
-                ElevatedButton(
-                  onPressed: _signIn,
-                  child: const Text('Sign In'),
                 ),
-                ElevatedButton(
-                  onPressed: null,
-                  child: const Text('Sign in with Google'),
-                ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    // Naviguer vers la page d'enregistrement
-                    Navigator.pushReplacementNamed(context, '/register'); // Utiliser pushReplacement pour éviter d'empiler
-                  },
-                  child: const Text("Don't have an account? Register here."),
-                ),
-              ],
-            ),
+              // Champ email
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 20),
+              // Champ mot de passe
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+              ),
+              const SizedBox(height: 20),
+              // Bouton de connexion par email et mot de passe
+              ElevatedButton(
+                onPressed: _signInWithEmail,
+                child: const Text('Sign In with Email'),
+              ),
+              const SizedBox(height: 20),
+              // Bouton de connexion via Google
+              ElevatedButton.icon(
+                onPressed: _signInWithGoogle,
+                icon: const Icon(Icons.account_circle),
+                label: const Text('Sign In with Google'),
+              ),
+              const SizedBox(height: 20),
+              // Lien vers la page d'inscription
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/register');
+                },
+                child: const Text("Don't have an account? Register here."),
+              ),
+            ],
           ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }
