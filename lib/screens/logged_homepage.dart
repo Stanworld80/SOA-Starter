@@ -7,16 +7,23 @@ class LoggedHomepage extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      // Après la déconnexion, l'EntryPage (ou StreamBuilder) détectera
-      // le changement d'état et redirigera vers la page non connectée.
-      // Pas besoin de navigation explicite ici la plupart du temps,
-      // sauf si vous avez une structure de navigation complexe.
+      // ---- AJOUT EXPLICITE DE LA NAVIGATION ----
+      // Utiliser pushNamedAndRemoveUntil pour aller à la racine ('/')
+      // et supprimer toutes les routes précédentes de la pile.
+      // S'assurer que le context est toujours valide après l'await.
+      if (context.mounted) { // Vérifier si le widget est toujours monté
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+      }
+      // -------------------------------------------
     } catch (e) {
       print("Error signing out: $e");
       // Afficher une erreur à l'utilisateur si la déconnexion échoue
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error signing out: $e')),
-      );
+      // S'assurer que le context est toujours valide
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error signing out: $e')),
+        );
+      }
     }
   }
 
