@@ -1,6 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:soa_starter/entry_page.dart';
+import 'package:soa_starter/logged_homepage.dart';
+import 'package:soa_starter/register_page.dart';
+import 'package:soa_starter/sign_in_page.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+
+void main() async  {
+  WidgetsFlutterBinding.ensureInitialized(); // Assurer que les widgets sont initialisés
+  await Firebase.initializeApp( // Initialiser Firebase
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -30,7 +42,13 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: EntryPage(),
+      routes: {
+        '/signin': (context) => SignInPage(),
+        '/register': (context) => RegisterPage(),
+        '/logged_homepage': (context) => LoggedHomepage(),
+
+      },
     );
   }
 }
@@ -117,6 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+
     );
   }
 }
