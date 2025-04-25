@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
 
@@ -99,6 +100,10 @@ class _SignInPageState extends State<SignInPage> {
                 ElevatedButton(
                   onPressed: _signIn,
                   child: const Text('Sign In'),
+                ),
+                ElevatedButton(
+                  onPressed: null,
+                  child: const Text('Sign in with Google'),
                 ),
                 const SizedBox(height: 10),
                 TextButton(

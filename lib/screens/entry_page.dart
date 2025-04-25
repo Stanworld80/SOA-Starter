@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:soa_starter/logged_homepage.dart';
-import 'package:soa_starter/auth_gate.dart'; // Créez AuthGate
+import 'package:soa_starter/auth_gate.dart';
+import 'logged_homepage.dart';
 
 class EntryPage extends StatelessWidget {
   const EntryPage({Key? key}) : super(key: key);
